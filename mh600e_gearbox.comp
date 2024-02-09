@@ -1,5 +1,5 @@
 /*
-LinuxCNC component for controlling the MAHO MH400E gearbox.
+LinuxCNC component for controlling the MAHO MH600E gearbox.
 
 Copyright (C) 2018 Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
 
@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-component mh400e_gearbox "Component to control the MAHO mh400e gearbox to set the requested speed";
+component mh600e_gearbox "Component to control the MAHO mh600e gearbox to set the requested speed";
 author "Sergey 'Jin' Bostandzhyan";
 license "GPL";
 
@@ -31,17 +31,20 @@ pin out float spindle_speed_out = 0 "Actual spindle speed feedback in revolution
 pin in bit reducer_left             "MESA 7i84 INPUT  0: 28X2-11";
 pin in bit reducer_right            "MESA 7i84 INPUT  1: 28X2-11";
 pin in bit reducer_center           "MESA 7i84 INPUT  2: 28X2-13";
-pin in bit reducer_left_center      "MESA 7i84 INPUT  3: 28X2-14";
+#No left-center pin on MH600E!
+#pin in bit reducer_left_center      "MESA 7i84 INPUT  3: 28X2-14";
 
 pin in bit middle_left              "MESA 7i84 INPUT  4: 28X2-15";
 pin in bit middle_right             "MESA 7i84 INPUT  5: 28X2-16";
 pin in bit middle_center            "MESA 7i84 INPUT  6: 28X2-17";
-pin in bit middle_left_center       "MESA 7i84 INPUT  7: 28X2-18";
+#No left-center pin on MH600E!
+#pin in bit middle_left_center       "MESA 7i84 INPUT  7: 28X2-18";
 
 pin in bit input_left               "MESA 7i84 INPUT  8: 28X2-19";
 pin in bit input_right              "MESA 7i84 INPUT  9: 28X2-20";
 pin in bit input_center             "MESA 7i84 INPUT 10: 28X2-21";
-pin in bit input_left_center        "MESA 7i84 INPUT 11: 28X2-22";
+#No left-center pin on MH600E!
+#pin in bit input_left_center        "MESA 7i84 INPUT 11: 28X2-22";
 
 /* spindle status pin */
 pin in bit spindle_stopped     = 0  "MESA 7i84 INPUT 19: TB2-4";
@@ -70,9 +73,9 @@ option singleton yes;
 
 #include <rtapi_math.h>
 
-#include "mh400e_common.h"
-#include "mh400e_util.h"
-#include "mh400e_gears.h"
+#include "mh600e_common.h"
+#include "mh600e_util.h"
+#include "mh600e_gears.h"
 
 static float g_last_spindle_speed = 0;
 
@@ -97,31 +100,31 @@ FUNCTION(setup)
      * the value represents the index of the key in our gears array. So
      * we'll put things together the way we need them for the tree generation
      */
-    pair_t temp[MH400E_NUM_GEARS];
-    for (i = 0; i < MH400E_NUM_GEARS; i++)
+    pair_t temp[MH600E_NUM_GEARS];
+    for (i = 0; i < MH600E_NUM_GEARS; i++)
     {
-        temp[i].key = mh400e_gears[i].key;
+        temp[i].key = mh600e_gears[i].key;
         temp[i].value = i;
     }
 
     /* build up binary tree from the gears array to search by rpm, this
      * array is already sorted */
-    g_tree_rpm = tree_from_sorted_array(temp, MH400E_NUM_GEARS);
+    g_tree_rpm = tree_from_sorted_array(temp, MH600E_NUM_GEARS);
 
-    /* build up a key:value list where the bitmask from the m400e_gears
+    /* build up a key:value list where the bitmask from the mh500e_gears
      * array is the key and the index of the original position in the
      * above array is the value */
-    for (i = 0; i < MH400E_NUM_GEARS; i++)
+    for (i = 0; i < MH600E_NUM_GEARS; i++)
     {
-        temp[i].key = mh400e_gears[i].value;
+        temp[i].key = mh600e_gears[i].value;
         temp[i].value = i;
     }
 
     /* sort the newly created array by key (needed for tree build up) */
-    sort_array_by_key(temp, MH400E_NUM_GEARS);
+    sort_array_by_key(temp, MH600E_NUM_GEARS);
 
     /* build up binary tree from the gears array to search for bitmask */
-    g_tree_mask = tree_from_sorted_array(temp, MH400E_NUM_GEARS);
+    g_tree_mask = tree_from_sorted_array(temp, MH600E_NUM_GEARS);
 
     g_last_spindle_speed = spindle_speed_in_abs;
 
@@ -134,7 +137,7 @@ FUNCTION(setup)
  * everything is already off at this point. */
 FUNCTION(handle_external_e_stop)
 {
-    rtapi_print_msg(RTAPI_MSG_ERR, "mh400e_gearbox: EMERGENCY STOP condition "
+    rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: EMERGENCY STOP condition "
                     "detected!\n");
     /* reset state machine avoiding delays */
     gearbox_handle_estop(); /* this function also stops/resets twitching */

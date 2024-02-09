@@ -1,5 +1,5 @@
 /*
-LinuxCNC component for controlling the MAHO MH400E gearbox.
+LinuxCNC component for controlling the MAHO MH600E gearbox.
 
 Copyright (C) 2018 Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
 
@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-component mh400e_gearbox_sim "Component allowing to partially simulate the MAHO MH400E gearbox";
+component mh600e_gearbox_sim "Component allowing to partially simulate the MAHO MH600E gearbox";
 author "Sergey 'Jin' Bostandzhyan";
 license "GPL";
 
@@ -36,16 +36,19 @@ pin out bit estop_out = 0           "Forward emergencystop event to the gearbox 
 pin out bit reducer_left            "MESA 7i84 INPUT  0: 28X2-11";
 pin out bit reducer_right           "MESA 7i84 INPUT  1: 28X2-11";
 pin out bit reducer_center = true   "MESA 7i84 INPUT  2: 28X2-13";
-pin out bit reducer_left_center     "MESA 7i84 INPUT  3: 28X2-14";
+#No left-center pins on MH600E!
+#pin out bit reducer_left_center     "MESA 7i84 INPUT  3: 28X2-14";
 
 pin out bit middle_left             "MESA 7i84 INPUT  4: 28X2-15";
 pin out bit middle_right            "MESA 7i84 INPUT  5: 28X2-16";
 pin out bit middle_center           "MESA 7i84 INPUT  6: 28X2-17";
+#No left-center pins on MH600E!
 pin out bit middle_left_center      "MESA 7i84 INPUT  7: 28X2-18";
 
 pin out bit input_left              "MESA 7i84 INPUT  8: 28X2-19";
 pin out bit input_right             "MESA 7i84 INPUT  9: 28X2-20";
 pin out bit input_center            "MESA 7i84 INPUT 10: 28X2-21";
+#No left-center pins on MH600E!
 pin out bit input_left_center       "MESA 7i84 INPUT 11: 28X2-22";
 
 /* TODO: comment on proper mapping */
@@ -69,8 +72,8 @@ option singleton yes;
 
 #include <rtapi_math.h>
 
-#include "mh400e_common.h"
-#include "mh400e_util.h"
+#include "mh600e_common.h"
+#include "mh600e_util.h"
 
 static unsigned g_last_spindle_speed = 0;
 
@@ -84,9 +87,9 @@ static bool g_setup_done = false;
 /* red: 1001, blue: 0100, yellow: 0010 */
 static unsigned char g_shaft_positions[SHAFT_POSITIONS] =
 {
-    MH400E_STAGE_POS_RIGHT,
-    MH400E_STAGE_POS_CENTER,
-    MH400E_STAGE_POS_LEFT
+    MH600E_STAGE_POS_RIGHT,
+    MH600E_STAGE_POS_CENTER,
+    MH600E_STAGE_POS_LEFT
 };
 
 /* start in neutral position */
@@ -139,7 +142,7 @@ FUNCTION(setup)
 static void set_pingroup(pin_group_t *group, unsigned char pins)
 {
     int i;
-    for (i = 0; i < MH400E_PINS_IN_GROUP; i++)
+    for (i = 0; i < MH600E_PINS_IN_GROUP; i++)
     {
         *(group->p[i]) = (pins >> i) & 1;
     }

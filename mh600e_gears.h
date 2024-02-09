@@ -1,5 +1,5 @@
 /*
-LinuxCNC component for controlling the MAHO MH400E gearbox.
+LinuxCNC component for controlling the MAHO MH600E gearbox.
 
 Copyright (C) 2018 Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
 
@@ -20,10 +20,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 /* Functions related to gear switching. */
 
-#ifndef __MH400E_GEARS_H__
-#define __MH400E_GEARS_H__
+#ifndef __MH600E_GEARS_H__
+#define __MH600E_GEARS_H__
 
-#include "mh400e_common.h"
+#include "mh600e_common.h"
 
 /* One time setup function to prepare data structures related to gearbox 
  * switching*/
@@ -60,6 +60,6 @@ static bool gearshift_in_progress(void);
 /* really ugly way of keeping more order and splitting the sources,
  * halcompile does not allow to link multipe source files together, so
  * ultimately all sources need to be included by the .comp directly */
-#include "mh400e_gears.c"
+#include "mh600e_gears.c"
 
-#endif//__MH400E_GEARS_H__
+#endif//__MH600E_GEARS_H__

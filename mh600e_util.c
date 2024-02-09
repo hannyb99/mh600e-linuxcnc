@@ -1,5 +1,5 @@
 /*
-LinuxCNC component for controlling the MAHO MH400E gearbox.
+LinuxCNC component for controlling the MAHO MH600E gearbox.
 
 Copyright (C) 2018 Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
 
@@ -39,7 +39,7 @@ static tree_node_t *tree_node_allocate(unsigned key, unsigned value)
     tree_node_t *tmp = (tree_node_t *)hal_malloc(sizeof(tree_node_t));
     if (tmp == NULL)
     {
-        rtapi_print_msg(RTAPI_MSG_ERR, "MH400E_GEARBOX: failed to allocate "
+        rtapi_print_msg(RTAPI_MSG_ERR, "MH600E_GEARBOX: failed to allocate "
                         "memory for tree node!");
         return NULL;
     }
@@ -200,22 +200,22 @@ static pair_t *select_gear_from_rpm(tree_node_t *tree, float rpm)
     /* handle two cases that do not need extra searching */
     if (rpm <= 0)
     {
-        return &(mh400e_gears[MH400E_NEUTRAL_GEAR_INDEX]);
+        return &(mh600e_gears[MH600E_NEUTRAL_GEAR_INDEX]);
     }
-    else if (rpm >= MH400E_MAX_RPM)
+    else if (rpm >= MH600E_MAX_RPM)
     {
-        return &(mh400e_gears[MH400E_MAX_GEAR_INDEX]);
+        return &(mh600e_gears[MH600E_MAX_GEAR_INDEX]);
     }
-    else if ((rpm > 0) && (rpm <= mh400e_gears[MH400E_MIN_RPM_INDEX].key))
+    else if ((rpm > 0) && (rpm <= mh600e_gears[MH600E_MIN_RPM_INDEX].key))
     {
         /* special case: everything >0 but lower than the lowest gear
          * should still return the lowest gear, because >0 means we want
          * the spindle to rotate */
-        return &(mh400e_gears[MH400E_MIN_RPM_INDEX]);
+        return &(mh600e_gears[MH600E_MIN_RPM_INDEX]);
     }
 
     result = tree_search_closest_match(tree, (unsigned)round(rpm));
 
-    return &(mh400e_gears[result->value]);
+    return &(mh600e_gears[result->value]);
 }
 

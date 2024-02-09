@@ -1,5 +1,5 @@
 *.so
-mh400e_gearbox.c
-mh400e_gearbox_sim.c
+mh600e_gearbox.c
+mh600e_gearbox_sim.c
 *.swp
 *.swo

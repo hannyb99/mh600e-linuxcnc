@@ -1,5 +1,5 @@
-# mh400e-linuxcnc
-MAHO MH400E gearbox controller component for LinuxCNC
+# mh600e-linuxcnc
+MAHO MH600E gearbox controller component for LinuxCNC
 
 ## DISCLAIMER
 

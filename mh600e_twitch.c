@@ -1,5 +1,5 @@
 /*
-LinuxCNC component for controlling the MAHO MH400E gearbox.
+LinuxCNC component for controlling the MAHO MH600E gearbox.
 
 Copyright (C) 2018 Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
 
@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 /* Implementation of the twitching functionality. */
 
-#include "mh400e_twitch.h"
+#include "mh600e_twitch.h"
 
 /* group twitch related data and states */
 static struct
@@ -82,7 +82,7 @@ static void twitch_stop(long period)
 
 /* Do not call this function directly, it will be setup by twitch_start().
  * Alternates between twitch_cw and twitch_ccw pins, respecting the
- * MH400E_TWITCH_KEEP_PIN_ON and MH400E_TWITCH_KEEP_PIN_OFF delays. */
+ * MH600E_TWITCH_KEEP_PIN_ON and MH600E_TWITCH_KEEP_PIN_OFF delays. */
 static void twitch_do(long period)
 {
     if (g_twitch_data.delay > 0)
@@ -105,7 +105,7 @@ static void twitch_do(long period)
             g_twitch_data.want_cw = true;
         }
 
-        g_twitch_data.delay = MH400E_TWITCH_KEEP_PIN_ON;
+        g_twitch_data.delay = MH600E_TWITCH_KEEP_PIN_ON;
         g_twitch_data.next = twitch_do;
         return;
     }
@@ -114,7 +114,7 @@ static void twitch_do(long period)
 
         *g_twitch_data.cw = false;
         g_twitch_data.want_cw = false;
-        g_twitch_data.delay = MH400E_TWITCH_KEEP_PIN_OFF;
+        g_twitch_data.delay = MH600E_TWITCH_KEEP_PIN_OFF;
         g_twitch_data.next = twitch_do;
         return;
     }
@@ -122,13 +122,13 @@ static void twitch_do(long period)
     {
         *g_twitch_data.ccw = false;
         g_twitch_data.want_cw = true;
-        g_twitch_data.delay = MH400E_TWITCH_KEEP_PIN_OFF;
+        g_twitch_data.delay = MH600E_TWITCH_KEEP_PIN_OFF;
         g_twitch_data.next = twitch_do;
         return;
     }
     else /* both are never allowed to be on */
     {
-        rtapi_print_msg(RTAPI_MSG_ERR, "mh400e_gearbox FATAL ERROR: twitch "
+        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox FATAL ERROR: twitch "
                         "cw + ccw are on, triggering emergency stop!\n");
         *g_twitch_data.trigger_estop = true;
     }
@@ -161,7 +161,7 @@ static void twitch_handle(long period)
 {
     if (g_twitch_data.next == NULL)
     {
-        rtapi_print_msg(RTAPI_MSG_ERR, "mh400e_gearbox FATAL ERROR: twitch "
+        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox FATAL ERROR: twitch "
                         "function not set up, triggering emergency stop!\n");
         *g_twitch_data.trigger_estop = true;
         return;

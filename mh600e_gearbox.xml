@@ -1,5 +1,5 @@
 <pyvcp>
-  <label text="MH400E gearbox control simulation"/>
+  <label text="MH600E gearbox control simulation"/>
   <hbox>
     <labelframe text="Gearbox Simulation">
       <vbox>

@@ -1,5 +1,5 @@
 /*
-LinuxCNC component for controlling the MAHO MH400E gearbox.
+LinuxCNC component for controlling the MAHO MH600E gearbox.
 
 Copyright (C) 2018 Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
 
@@ -25,8 +25,8 @@ sources, so we have to go the somewhat ugly way of implementing those
 functions directly in the header files.
 */
 
-#ifndef __MH400E_UTIL_H__
-#define __MH400E_UTIL_H__
+#ifndef __MH600E_UTIL_H__
+#define __MH600E_UTIL_H__
 
 #include <rtapi.h>
 
@@ -72,7 +72,7 @@ static tree_node_t *tree_search(tree_node_t *root, unsigned key);
 /* Simple bubble sort to get our gear arrays in order. */
 static void sort_array_by_key(pair_t array[], size_t length);
 
-/* Find the closest matching gear that is supported by the MH400E.
+/* Find the closest matching gear that is supported by the MH600E.
  *
  * Everything <= 0 is matched to 0. Everything >4000 is matched to 4000,
  * which is the maximum supported speed.
@@ -91,6 +91,6 @@ static pair_t *select_gear_from_rpm(tree_node_t *tree, float rpm);
 /* really ugly way of keeping more order and splitting the sources,
  * halcompile does not allow to link multipe source files together, so
  * ultimately all sources need to be included by the .comp directly */
-#include <mh400e_util.c>
+#include <mh600e_util.c>
 
-#endif//__MH400E_UTIL_H__
+#endif//__MH00E_UTIL_H__

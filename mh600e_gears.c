@@ -1,5 +1,5 @@
 /*
-LinuxCNC component for controlling the MAHO MH400E gearbox.
+LinuxCNC component for controlling the MAHO mh600e gearbox.
 
 Copyright (C) 2018 Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
 
@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 /* Functions related to gear switching. */
 
-#include "mh400e_gears.h"
-#include "mh400e_twitch.h"
+#include "mh600e_gears.h"
+#include "mh600e_twitch.h"
 
 typedef enum
 {
@@ -102,7 +102,7 @@ FUNCTION(gearbox_setup)
     g_gearbox_data.backgear.motor_slow = &motor_lowspeed;
     g_gearbox_data.backgear.current_mask = 0;
     g_gearbox_data.backgear.target_mask =
-        mh400e_gears[MH400E_NEUTRAL_GEAR_INDEX].value; /* neutral */
+        mh600e_gears[MH600E_NEUTRAL_GEAR_INDEX].value; /* neutral */
 
     g_gearbox_data.midrange.state = SHAFT_STATE_OFF;
     #pragma push_macro("middle_left")
@@ -181,7 +181,7 @@ static unsigned char get_bitmask_from_pingroup(pin_group_t *group)
 {
     unsigned char mask = 0;
     int i;
-    for (i = 0; i < MH400E_PINS_IN_GROUP; i++)
+    for (i = 0; i < MH600E_PINS_IN_GROUP; i++)
     {
         mask |= *(group->p[i]) << i;
     }
@@ -209,7 +209,7 @@ static bool estop_on_spindle_running(void)
          *
          * We expect that estop_out will be looped back to us so that
          * it will trigger our handler. */
-        rtapi_print_msg(RTAPI_MSG_ERR, "mh400e_gearbox FATAL ERROR: detected "
+        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox FATAL ERROR: detected "
                 "running spindle while shifting, triggering emergency stop!\n");
         *g_gearbox_data.trigger_estop = true;
         return true;
@@ -231,15 +231,15 @@ static pair_t* get_current_gear(tree_node_t *tree)
 
     /* special case: ignore all other bits for neutral */
     if (g_gearbox_data.backgear.current_mask ==
-            mh400e_gears[MH400E_NEUTRAL_GEAR_INDEX].value)
+            mh600e_gears[MH600E_NEUTRAL_GEAR_INDEX].value)
     {
-        return &(mh400e_gears[MH400E_NEUTRAL_GEAR_INDEX]);
+        return &(mh600e_gears[MH600E_NEUTRAL_GEAR_INDEX]);
     }
 
     result = tree_search(tree, combined);
     if (result != NULL)
     {
-        return &(mh400e_gears[result->value]);
+        return &(mh600e_gears[result->value]);
     }
     return NULL;
 }
@@ -257,7 +257,7 @@ static bool gearshift_wait_delay(long period)
 }
 
 /* From:
- * https://forum.linuxcnc.org/12-milling/33035-retrofitting-a-1986-maho-mh400e?start=460#117021
+ * https://forum.linuxcnc.org/12-milling/33035-retrofitting-a-1986-maho-mh600e?start=460#117021
  *
  * 1. if u need to go to the left then turn cw
  * 2. if u need to go to the right than turn ccw
@@ -276,17 +276,17 @@ static bool gearshift_wait_delay(long period)
 static bool gearshift_need_reverse(unsigned char target_mask,
                                    unsigned char current_mask)
 {
-    if (MH400E_STAGE_IS_RIGHT(target_mask))           /* CCW, reverse is on */
+    if (MH600E_STAGE_IS_RIGHT(target_mask))           /* CCW, reverse is on */
     {
         return true;
     }
-    else if (MH400E_STAGE_IS_LEFT(target_mask))       /* CW, reverse is off */
+    else if (MH600E_STAGE_IS_LEFT(target_mask))       /* CW, reverse is off */
     {
         return false;
     }
-    else if (MH400E_STAGE_IS_CENTER(target_mask))
+    else if (MH600E_STAGE_IS_CENTER(target_mask))
     {
-        if (!MH400E_STAGE_IS_LEFT_CENTER(current_mask))/* CW,reverse is off */
+        if (!MH600E_STAGE_IS_LEFT_CENTER(current_mask))/* CW,reverse is off */
         {
             return false;
         }
@@ -315,10 +315,10 @@ static bool gearshift_protect(shaft_data_t *shaft)
          * which does not seem to be our desired target, then we should
          * disable the motor and trigger an E-STOP, we should never end up#
          * in this situation. */
-        if ((shaft->current_mask == MH400E_STAGE_POS_RIGHT) &&
+        if ((shaft->current_mask == MH600E_STAGE_POS_RIGHT) &&
             (shaft->current_mask != shaft->target_mask))
         {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh400e_gearbox: WARNING: "
+            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: WARNING: "
                         "shaft motor at unexpected right position!\n");
         }
         else
@@ -332,10 +332,10 @@ static bool gearshift_protect(shaft_data_t *shaft)
          * which does not seem to be our desired target, then we should
          * disable the motor and trigger an E-STOP, we should never end up#
          * in this situation. */
-        if ((shaft->current_mask == MH400E_STAGE_POS_LEFT) &&
+        if ((shaft->current_mask == MH600E_STAGE_POS_LEFT) &&
             (shaft->current_mask != shaft->target_mask))
         {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh400e_gearbox: WARNING: "
+            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: WARNING: "
                         "shaft motor at unexpected left position!\n");
         }
         else
@@ -380,7 +380,7 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
                                        shaft->current_mask))
             {
                 *shaft->motor_reverse = true;
-                g_gearbox_data.delay = MH400E_REVERSE_MOTOR_INTERVAL;
+                g_gearbox_data.delay = MH600E_REVERSE_MOTOR_INTERVAL;
             }
             g_gearbox_data.next = me;
         }
@@ -407,7 +407,7 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
             /* If reverse direction has been set, disable it in 100ms */
             if (*shaft->motor_reverse)
             {
-                g_gearbox_data.delay = MH400E_GENERIC_PIN_INTERVAL;
+                g_gearbox_data.delay = MH600E_GENERIC_PIN_INTERVAL;
                 g_gearbox_data.next = me;
                 return;
             }
@@ -418,14 +418,14 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
           
             if (*shaft->motor_slow)
             {
-                g_gearbox_data.delay = MH400E_GENERIC_PIN_INTERVAL;
+                g_gearbox_data.delay = MH600E_GENERIC_PIN_INTERVAL;
                 g_gearbox_data.next = me;
                 return;
             }
 
             /* We are done here, proceed to the next stage */
             shaft->state = SHAFT_STATE_OFF;
-            g_gearbox_data.delay = MH400E_GENERIC_PIN_INTERVAL;
+            g_gearbox_data.delay = MH600E_GENERIC_PIN_INTERVAL;
             g_gearbox_data.next = next;
         }
         else
@@ -440,13 +440,13 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
             {
                 *shaft->motor_on = false;
                 shaft->state = SHAFT_STATE_RESTART;
-                g_gearbox_data.delay = MH400E_REVERSE_MOTOR_INTERVAL;
+                g_gearbox_data.delay = MH600E_REVERSE_MOTOR_INTERVAL;
                 g_gearbox_data.next = me;
                 return;
             }
 
             /* Going to the center requres lowering the motor speed */
-            if (MH400E_STAGE_IS_CENTER(shaft->target_mask) && 
+            if (mh600e_STAGE_IS_CENTER(shaft->target_mask) && 
                 !(*shaft->motor_slow))
             {
                 *shaft->motor_slow = true;
@@ -457,7 +457,7 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
                 *shaft->motor_on = true;
             }
 
-            g_gearbox_data.delay = MH400E_GEAR_STAGE_POLL_INTERVAL;
+            g_gearbox_data.delay = MH600E_GEAR_STAGE_POLL_INTERVAL;
             g_gearbox_data.next = me;
         }
     }
@@ -469,7 +469,7 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
           if (*shaft->motor_reverse)
           {
               *shaft->motor_reverse = false;
-              g_gearbox_data.delay = MH400E_GENERIC_PIN_INTERVAL;
+              g_gearbox_data.delay = MH600E_GENERIC_PIN_INTERVAL;
               g_gearbox_data.next = me;
               return;
           }
@@ -477,7 +477,7 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
           if (*shaft->motor_slow)
           {
               *shaft->motor_slow = false;
-              g_gearbox_data.delay = MH400E_GENERIC_PIN_INTERVAL;
+              g_gearbox_data.delay = MH600E_GENERIC_PIN_INTERVAL;
           }
 
           /* Going back to the OFF state will retrigger the shift logic for
@@ -499,7 +499,7 @@ static void gearshift_stop(long period)
 
     if (!twitch_stop_completed())
     {
-        g_gearbox_data.delay = MH400E_TWITCH_KEEP_PIN_OFF;
+        g_gearbox_data.delay = MH600E_TWITCH_KEEP_PIN_OFF;
         g_gearbox_data.next = gearshift_stop;
         return;
     }
@@ -511,7 +511,7 @@ static void gearshift_stop(long period)
         if (g_gearbox_data.spindle_on_before_shift)
         {
             *g_gearbox_data.do_stop_spindle = false;
-            g_gearbox_data.delay = MH400E_WAIT_SPINDLE_AT_SPEED;
+            g_gearbox_data.delay = MH600E_WAIT_SPINDLE_AT_SPEED;
             g_gearbox_data.next = gearshift_stop;
             return;
         }
@@ -554,7 +554,7 @@ static void gearshift_handle(long period)
 
     if (g_gearbox_data.next == NULL)
     {
-        rtapi_print_msg(RTAPI_MSG_ERR, "mh400e_gearbox FATAL ERROR: "
+        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox FATAL ERROR: "
                         "gearshift function not set up, triggering E-Stop!\n");
         *g_gearbox_data.trigger_estop = true;
         return;
@@ -578,7 +578,7 @@ static void gearshift_start(pair_t *target_gear, long period)
 
     /* Make sure to leave 100ms between setting start_gear_shift to "on"
      * and further operations */
-    g_gearbox_data.delay = MH400E_GENERIC_PIN_INTERVAL;
+    g_gearbox_data.delay = MH600E_GENERIC_PIN_INTERVAL;
 
     *g_gearbox_data.start_shift = true;
 
@@ -587,7 +587,7 @@ static void gearshift_start(pair_t *target_gear, long period)
     /* Special case: if we want to go to the neutral position, we
      * only care about the backgear stage, so we can jump right to it */
     if (g_gearbox_data.backgear.target_mask ==
-            mh400e_gears[MH400E_NEUTRAL_GEAR_INDEX].value) {
+            mh600e_gears[MH600E_NEUTRAL_GEAR_INDEX].value) {
         g_gearbox_data.next = gearshift_backgear;
     }
     else

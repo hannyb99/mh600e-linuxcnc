@@ -1,5 +1,5 @@
 /*
-LinuxCNC component for controlling the MAHO MH400E gearbox.
+LinuxCNC component for controlling the MAHO MH600E gearbox.
 
 Copyright (C) 2018 Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
 
@@ -20,12 +20,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 /* Implementation of the twitching functionality. */
 
-#ifndef __MH400E_TWITCH_H__
-#define __MH400E_TWITCH_H__
+#ifndef __MH600E_TWITCH_H__
+#define __MH600E_TWITCH_H__
 
 #include <rtapi.h>
 
-#include "mh400e_common.h"
+#include "mh600e_common.h"
 
 /* Call only once, sets up the global twitch state data structure */
 FUNCTION(twitch_setup);
@@ -51,6 +51,6 @@ static bool twitch_stop_completed(void);
 /* really ugly way of keeping more order and splitting the sources,
  * halcompile does not allow to link multipe source files together, so
  * ultimately all sources need to be included by the .comp directly */
-#include "mh400e_twitch.c"
+#include "mh600e_twitch.c"
 
-#endif//__MH400E_TWITCH_H__
+#endif//__MH600E_TWITCH_H__
