@@ -1,0 +1,113 @@
+component mh600e_lubricator;
+
+pin in bit pressure_switch;
+pin in bit float_switch;
+pin in bit machine_on;
+pin in bit reset_fault;
+
+pin out bit pump_on;
+pin out bit fault;
+
+// The lubricator is a simple state machine with four states: PRESSURIZING, PRESSURIZED, WAITING, and FAULT.
+
+option singleton yes;
+
+function _;
+
+;;
+
+#define OFF 0
+#define WAITING 1
+#define PRESSURIZING 2
+#define PRESSURIZED 3
+#define FAULT 4
+
+#define PRESSURIZING_TIMEOUT 10000
+#define PRESSURIZED_TIME 10000
+#define WAIT_TIME 10000
+
+int state = OFF;
+int next_state = OFF;
+int state_time = 0;
+
+FUNCTION(_)
+{
+    if (state == OFF)
+    {
+        pump_on = 0;
+        if (machine_on)
+        {
+            if (float_switch)
+            {
+                state_time = 0;
+                next_state = FAULT;
+            }
+            else
+            {
+                state_time = 0;
+                next_state = PRESSURIZING;
+            }
+        }
+    }
+    else if (state == PRESSURIZING)
+    {
+        if (state_time > PRESSURIZING_TIMEOUT || float_switch)
+        {
+            state_time = 0;
+            next_state = FAULT;
+        }
+        else if (pressure_switch)
+        {
+            state_time = 0;
+            next_state = PRESSURIZED;
+        }
+        else
+        {
+            pump_on = 1;
+        }
+    }
+    else if (state == PRESSURIZED)
+    {
+        if (float_switch)
+        {
+            state_time = 0;
+            next_state = FAULT;
+        }
+        else if (state_time > PRESSURIZED_TIME)
+        {
+            state_time = 0;
+            next_state = WAITING;
+        }
+    }
+    else if (state == WAITING)
+    {
+        pump_on = 0;
+        if (float_switch)
+        {
+            state_time = 0;
+            next_state = FAULT;
+        }
+        else if (state_time > WAIT_TIME)
+        {
+            state_time = 0;
+            next_state = PRESSURIZING;
+        }
+    }
+    else if (state == FAULT)
+    {
+        pump_on = 0;
+        if (reset_fault)
+        {
+            state_time = 0;
+            next_state = PRESSURIZING;
+            reset_fault = 0;
+        }
+    }
+    if (!machine_on)
+    {
+        state_time = 0;
+        next_state = OFF;
+    }
+    state_time += 1;
+    state = next_state;
+}
