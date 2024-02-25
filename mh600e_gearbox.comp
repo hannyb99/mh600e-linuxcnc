@@ -31,20 +31,14 @@ pin out float spindle_speed_out = 0 "Actual spindle speed feedback in revolution
 pin in bit reducer_left             "MESA 7i84 INPUT  0: 28X2-11";
 pin in bit reducer_right            "MESA 7i84 INPUT  1: 28X2-11";
 pin in bit reducer_center           "MESA 7i84 INPUT  2: 28X2-13";
-#No left-center pin on MH600E!
-#pin in bit reducer_left_center      "MESA 7i84 INPUT  3: 28X2-14";
 
 pin in bit middle_left              "MESA 7i84 INPUT  4: 28X2-15";
 pin in bit middle_right             "MESA 7i84 INPUT  5: 28X2-16";
 pin in bit middle_center            "MESA 7i84 INPUT  6: 28X2-17";
-#No left-center pin on MH600E!
-#pin in bit middle_left_center       "MESA 7i84 INPUT  7: 28X2-18";
 
 pin in bit input_left               "MESA 7i84 INPUT  8: 28X2-19";
 pin in bit input_right              "MESA 7i84 INPUT  9: 28X2-20";
 pin in bit input_center             "MESA 7i84 INPUT 10: 28X2-21";
-#No left-center pin on MH600E!
-#pin in bit input_left_center        "MESA 7i84 INPUT 11: 28X2-22";
 
 /* spindle status pin */
 pin in bit spindle_stopped     = 0  "MESA 7i84 INPUT 19: TB2-4";

@@ -81,22 +81,18 @@ FUNCTION(gearbox_setup)
     #pragma push_macro("reducer_left")
     #pragma push_macro("reducer_right")
     #pragma push_macro("reducer_center")
-    #pragma push_macro("reducer_left_center")
     #undef reducer_left
     #undef reducer_right
     #undef reducer_center
-    #undef reducer_left_center
 	g_gearbox_data.backgear.status_pins = (pin_group_t)
     {
         __comp_inst->reducer_left,
         __comp_inst->reducer_right,
         __comp_inst->reducer_center,
-        __comp_inst->reducer_left_center
     };
     #pragma pop_macro("reducer_left")
     #pragma pop_macro("reducer_right")
     #pragma pop_macro("reducer_center")
-    #pragma pop_macro("reducer_left_center")
     g_gearbox_data.backgear.motor_on = &reducer_motor;
     g_gearbox_data.backgear.motor_reverse = &reverse_direction;
     g_gearbox_data.backgear.motor_slow = &motor_lowspeed;
@@ -108,22 +104,18 @@ FUNCTION(gearbox_setup)
     #pragma push_macro("middle_left")
     #pragma push_macro("middle_right")
     #pragma push_macro("middle_center")
-    #pragma push_macro("middle_left_center")
     #undef middle_left
     #undef middle_right
     #undef middle_center
-    #undef middle_left_center
     g_gearbox_data.midrange.status_pins = (pin_group_t)
     {
         __comp_inst->middle_left,
         __comp_inst->middle_right,
         __comp_inst->middle_center,
-        __comp_inst->middle_left_center
     };
     #pragma pop_macro("middle_left")
     #pragma pop_macro("middle_right")
     #pragma pop_macro("middle_center")
-    #pragma pop_macro("middle_left_center")
     g_gearbox_data.midrange.motor_on = &midrange_motor;
     g_gearbox_data.midrange.motor_reverse = &reverse_direction;
     g_gearbox_data.midrange.motor_slow = &motor_lowspeed;
@@ -134,22 +126,18 @@ FUNCTION(gearbox_setup)
     #pragma push_macro("input_left")
     #pragma push_macro("input_right")
     #pragma push_macro("input_center")
-    #pragma push_macro("input_left_center")
     #undef input_left
     #undef input_right
     #undef input_center
-    #undef input_left_center
     g_gearbox_data.input_stage.status_pins = (pin_group_t)
     {
         __comp_inst->input_left,
         __comp_inst->input_right,
         __comp_inst->input_center,
-        __comp_inst->input_left_center
     };
     #pragma pop_macro("input_left")
     #pragma pop_macro("input_right")
     #pragma pop_macro("input_center")
-    #pragma pop_macro("input_left_center")
     g_gearbox_data.input_stage.motor_on = &input_stage_motor;
     g_gearbox_data.input_stage.motor_reverse = &reverse_direction;
     g_gearbox_data.input_stage.motor_slow = &motor_lowspeed;
@@ -286,7 +274,7 @@ static bool gearshift_need_reverse(unsigned char target_mask,
     }
     else if (MH600E_STAGE_IS_CENTER(target_mask))
     {
-        if (!MH600E_STAGE_IS_LEFT_CENTER(current_mask))/* CW,reverse is off */
+        if (!MH600E_STAGE_IS_RIGHT(current_mask))/* CW,reverse is off */
         {
             return false;
         }
@@ -311,7 +299,7 @@ static bool gearshift_protect(shaft_data_t *shaft)
 
     if (*shaft->motor_reverse)
     {
-        /* If we move to the left/CW and we reached the furthest left position
+        /* If we move to the right/CCW and we reached the furthest right position
          * which does not seem to be our desired target, then we should
          * disable the motor and trigger an E-STOP, we should never end up#
          * in this situation. */
@@ -430,7 +418,7 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
         }
         else
         {
-            /* Protect furthest lect/CW and right/CCW end positions by not
+            /* Protect furthest left/CW and right/CCW end positions by not
              * allowing the motor to continue running if we reached them,
              * this should never happen, but it's better to have a safety
              * measure to prevent hardware damage. The function will

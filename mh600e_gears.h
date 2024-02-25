@@ -40,7 +40,7 @@ static pair_t* get_current_gear(tree_node_t *tree);
 
 /* Start gear shifting, parameter specifies the target gear that we want
  * to shift to.
- * ATTENTION: this function will set the vlaue of the start_gear_shift pin 
+ * ATTENTION: this function will set the value of the start_gear_shift pin 
  * and also start twitching. */
 static void gearshift_start(pair_t *target_gear, long period);
 

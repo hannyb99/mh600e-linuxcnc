@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #define __MH600E_COMMON_H__
 
 /* structure that allows to group pins together */
-#define MH600E_PINS_IN_GROUP    4
+#define MH600E_PINS_IN_GROUP    3
 typedef struct
 {
     hal_bit_t *p[MH600E_PINS_IN_GROUP];
@@ -36,9 +36,9 @@ typedef struct
 } pair_t;
 
 
-/* Each shaft is described by 4 bits:
- *                3        2       1      0
- * msb "left center" "center" "right" "left" lsb
+/* Each shaft is described by 3 bits:
+ *        3        2        1      0
+ * msb "unused" "center" "right" "left" lsb
  *
  * The table below provides the mask for all three shafts.
  * The helper macros should be used on an extracted 4 bit value.
@@ -46,34 +46,33 @@ typedef struct
 #define MH600E_STAGE_IS_LEFT(mask)          (mask & 1)
 #define MH600E_STAGE_IS_RIGHT(mask)         ((mask >> 1) & 1)
 #define MH600E_STAGE_IS_CENTER(mask)        ((mask >> 2) & 1)
-#define MH600E_STAGE_IS_LEFT_CENTER(mask)   ((mask >> 3) & 1)
 
 /* lookup table from rpm to gearbox status pin values */
 static pair_t mh600e_gears[] =
 {  /* rpm   bitmask                msb 11 10 9 8 7 6 5 4 3 2 1 0 lsb */
-    { 0,    4       },              /* neutral           0 1 0 0 */
-    { 80,   1097    },              /*   0 1 0 0 0 1 0 0 1 0 0 1 */
-    { 100,  2377    },              /*   1 0 0 1 0 1 0 0 1 0 0 1 */
-    { 125,  585     },              /*   1 0 1 0 0 1 0 0 1 0 0 1 */
-    { 160,  1177    },              /*   0 1 0 0 1 0 0 1 1 0 0 1 */
-    { 200,  2457    },              /*   1 0 0 1 1 0 0 1 1 0 0 1 */
-    { 250,  665     },              /*   0 0 1 0 1 0 0 1 1 0 0 1 */
-    { 315,  1065    },              /*   0 1 0 0 0 0 1 0 1 0 0 1 */
-    { 400,  2345    },              /*   1 0 0 1 0 0 1 0 1 0 0 1 */
-    { 500,  553     },              /*   0 0 1 0 0 0 1 0 1 0 0 1 */
+    { 0,    4       },              /*   neutral         0 1 0 0 */
+    { 80,   1089    },              /*   0 1 0 0 0 1 0 0 0 0 0 1 */
+    { 100,  321     },              /*   0 0 0 1 0 1 0 0 0 0 0 1 */
+    { 125,  577     },              /*   0 0 1 0 0 1 0 0 0 0 0 1 */
+    { 160,  1041    },              /*   0 1 0 0 0 0 0 1 0 0 0 1 */
+    { 200,  273     },              /*   0 0 0 1 0 0 0 1 0 0 0 1 */
+    { 250,  529     },              /*   0 0 1 0 0 0 0 1 0 0 0 1 */
+    { 315,  1057    },              /*   0 1 0 0 0 0 1 0 0 0 0 1 */
+    { 400,  289     },              /*   0 0 0 1 0 0 1 0 0 0 0 1 */
+    { 500,  545     },              /*   0 0 1 0 0 0 1 0 0 0 0 1 */
     { 630,  1090    },              /*   0 1 0 0 0 1 0 0 0 0 1 0 */
-    { 800,  2370    },              /*   1 0 0 1 0 1 0 0 0 0 1 0 */
+    { 800,  322     },              /*   0 0 0 1 0 1 0 0 0 0 1 0 */
     { 1000, 578     },              /*   0 0 1 0 0 1 0 0 0 0 1 0 */
-    { 1250, 1170    },              /*   0 1 0 0 1 0 0 1 0 0 1 0 */
-    { 1600, 2450    },              /*   1 0 0 1 1 0 0 1 0 0 1 0 */
-    { 2000, 658     },              /*   0 0 1 0 1 0 0 1 0 0 1 0 */
+    { 1250, 1042    },              /*   0 1 0 0 0 0 0 1 0 0 1 0 */
+    { 1600, 274     },              /*   0 0 0 1 0 0 0 1 0 0 1 0 */
+    { 2000, 530     },              /*   0 0 1 0 0 0 0 1 0 0 1 0 */
     { 2500, 1058    },              /*   0 1 0 0 0 0 1 0 0 0 1 0 */
-    { 3150, 2338    },              /*   1 0 0 1 0 0 1 0 0 0 1 0 */
+    { 3150, 290     },              /*   0 0 0 1 0 0 1 0 0 0 1 0 */
     { 4000, 546     }               /*   0 0 1 0 0 0 1 0 0 0 1 0 */
 };
 
 /* Furthest CCW position, marked as "red" on the MAHO   */
-#define MH600E_STAGE_POS_LEFT               9   /* 1001 */
+#define MH600E_STAGE_POS_LEFT               1   /* 0001 */
 
 /* Middle shaft position, marked as "bloue" on the MAHO */
 #define MH600E_STAGE_POS_CENTER             4   /* 0100 */
