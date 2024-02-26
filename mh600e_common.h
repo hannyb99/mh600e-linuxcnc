@@ -36,7 +36,7 @@ typedef struct
 } pair_t;
 
 
-/* Each shaft is described by 3 bits:
+/* Each shaft is described by 4 bits:
  *        3        2        1      0
  * msb "unused" "center" "right" "left" lsb
  *

@@ -249,7 +249,7 @@ static bool gearshift_wait_delay(long period)
  *
  * 1. if u need to go to the left then turn cw
  * 2. if u need to go to the right than turn ccw
- * 3. if u need to go to the middle and Left-Center is 1 then turn ccw else cw
+ * 3. if u need to go to the middle and current pos is left then turn ccw else cw
  *
  * ┌───┐
  * ┘   └──────────────── left
@@ -257,8 +257,6 @@ static bool gearshift_wait_delay(long period)
  * ────────┘   └──────── center
  *                 ┌───┐
  * ────────────────┘   └ right
- *           ┌──────────
- * ──────────┘           left-center
  *
  */
 static bool gearshift_need_reverse(unsigned char target_mask,
@@ -266,21 +264,46 @@ static bool gearshift_need_reverse(unsigned char target_mask,
 {
     if (MH600E_STAGE_IS_RIGHT(target_mask))           /* CCW, reverse is on */
     {
+        rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+                        "target pos is right (reverse on), current pos mask is %d\n", current_mask);
         return true;
     }
     else if (MH600E_STAGE_IS_LEFT(target_mask))       /* CW, reverse is off */
     {
+        rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+                        "target pos is left (reverse off), current pos mask is %d\n", current_mask);
         return false;
     }
     else if (MH600E_STAGE_IS_CENTER(target_mask))
     {
-        if (!MH600E_STAGE_IS_RIGHT(current_mask))/* CW,reverse is off */
+        if (MH600E_STAGE_IS_LEFT(current_mask))/* CCW,reverse is on */
         {
+            rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+                            "target pos is center, current pos is left: %d (reverse on)\n", current_mask);
+            return true;
+        }
+        else if (MH600E_STAGE_IS_RIGHT(current_mask)) /* CW, reverse is off */
+        {
+            rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+                            "target pos is center, current pos is right: %d (reverse off)\n", current_mask);
+            return false;
+        }
+        else if (MH600E_STAGE_IS_CENTER(current_mask)) /* CW, reverse is off */
+        {
+            rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+                            "target pos is center, current pos is center: %d (reverse off)\n", current_mask);
+            return false;
+        }
+        else
+        {
+            rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+                            "target pos is center, current pos is in between, mask is: %d (reverse off)\n", current_mask);
             return false;
         }
     }
-            
-    return true;
+    rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: WARNING: "
+                     "gearshift_need_reverse: invalid target mask!\n");
+    return false;
 }
 
 
@@ -434,7 +457,7 @@ static void gearshift_stage(shaft_data_t *shaft, statefunc me, statefunc next,
             }
 
             /* Going to the center requres lowering the motor speed */
-            if (mh600e_STAGE_IS_CENTER(shaft->target_mask) && 
+            if (MH600E_STAGE_IS_CENTER(shaft->target_mask) && 
                 !(*shaft->motor_slow))
             {
                 *shaft->motor_slow = true;
@@ -517,18 +540,21 @@ static void gearshift_stop(long period)
 
 static void gearshift_backgear(long period)
 {
+    rtapi_print(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_backgear started\n");
     gearshift_stage(&(g_gearbox_data.backgear), gearshift_backgear,
                     gearshift_stop, period);
 }
 
 static void gearshift_midrange(long period)
 {
+    rtapi_print(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_midrange started\n");
     gearshift_stage(&(g_gearbox_data.midrange), gearshift_midrange,
                     gearshift_backgear, period);
 }
 
 static void gearshift_input_stage(long period)
 {
+    rtapi_print(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_input_stage started\n");
     gearshift_stage(&(g_gearbox_data.input_stage), gearshift_input_stage,
                     gearshift_midrange, period);
 }
