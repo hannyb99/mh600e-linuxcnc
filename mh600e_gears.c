@@ -540,21 +540,21 @@ static void gearshift_stop(long period)
 
 static void gearshift_backgear(long period)
 {
-    rtapi_print(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_backgear started\n");
+    rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_backgear started\n");
     gearshift_stage(&(g_gearbox_data.backgear), gearshift_backgear,
                     gearshift_stop, period);
 }
 
 static void gearshift_midrange(long period)
 {
-    rtapi_print(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_midrange started\n");
+    rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_midrange started\n");
     gearshift_stage(&(g_gearbox_data.midrange), gearshift_midrange,
                     gearshift_backgear, period);
 }
 
 static void gearshift_input_stage(long period)
 {
-    rtapi_print(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_input_stage started\n");
+    rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_input_stage started\n");
     gearshift_stage(&(g_gearbox_data.input_stage), gearshift_input_stage,
                     gearshift_midrange, period);
 }
