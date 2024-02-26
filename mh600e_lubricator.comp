@@ -14,6 +14,8 @@ option singleton yes;
 
 function _;
 
+license "GPL";
+
 ;;
 
 #define OFF 0
@@ -23,8 +25,8 @@ function _;
 #define FAULT 4
 
 #define PRESSURIZING_TIMEOUT 10000
-#define PRESSURIZED_TIME 10000
-#define WAIT_TIME 10000
+#define PRESSURIZED_TIME 60000
+#define WAIT_TIME 600000
 
 int state = OFF;
 int next_state = OFF;
@@ -37,10 +39,10 @@ FUNCTION(_)
         pump_on = 0;
         if (machine_on)
         {
-            if (float_switch)
+            if (!float_switch)
             {
                 state_time = 0;
-                next_state = FAULT;
+                next_state = OFF;
             }
             else
             {
@@ -51,10 +53,10 @@ FUNCTION(_)
     }
     else if (state == PRESSURIZING)
     {
-        if (state_time > PRESSURIZING_TIMEOUT || float_switch)
+        if (state_time > PRESSURIZING_TIMEOUT || !float_switch)
         {
             state_time = 0;
-            next_state = FAULT;
+            next_state = OFF;
         }
         else if (pressure_switch)
         {
@@ -68,7 +70,7 @@ FUNCTION(_)
     }
     else if (state == PRESSURIZED)
     {
-        if (float_switch)
+        if (!float_switch)
         {
             state_time = 0;
             next_state = FAULT;
@@ -82,7 +84,7 @@ FUNCTION(_)
     else if (state == WAITING)
     {
         pump_on = 0;
-        if (float_switch)
+        if (!float_switch)
         {
             state_time = 0;
             next_state = FAULT;
