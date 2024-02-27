@@ -50,7 +50,7 @@ typedef struct
 /* lookup table from rpm to gearbox status pin values */
 static pair_t mh600e_gears[] =
 {  /* rpm   bitmask                msb 11 10 9 8 7 6 5 4 3 2 1 0 lsb */
-    { 0,    4       },              /*   neutral         0 1 0 0 */
+    { 1,    4       },              /*   neutral         0 1 0 0 */
     { 80,   1089    },              /*   0 1 0 0 0 1 0 0 0 0 0 1 */
     { 100,  321     },              /*   0 0 0 1 0 1 0 0 0 0 0 1 */
     { 125,  577     },              /*   0 0 1 0 0 1 0 0 0 0 0 1 */
@@ -74,7 +74,7 @@ static pair_t mh600e_gears[] =
 /* Furthest CCW position, marked as "red" on the MAHO   */
 #define MH600E_STAGE_POS_LEFT               1   /* 0001 */
 
-/* Middle shaft position, marked as "bloue" on the MAHO */
+/* Middle shaft position, marked as "blue" on the MAHO */
 #define MH600E_STAGE_POS_CENTER             4   /* 0100 */
 
 /* Furthest CW position, marked as "yellow" on the MAHO */

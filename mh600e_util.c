@@ -197,8 +197,13 @@ static pair_t *select_gear_from_rpm(tree_node_t *tree, float rpm)
 {
     tree_node_t *result;
 
-    /* handle two cases that do not need extra searching */
-    if (rpm <= 0)
+    /* handle two cases that do not need extra searching
+     * 0 -> no gearchange and 1 -> neutral gear */
+    if (rpm < 1)
+    {
+        return NULL;
+    }
+    else if (rpm == 1)
     {
         return &(mh600e_gears[MH600E_NEUTRAL_GEAR_INDEX]);
     }
@@ -206,10 +211,10 @@ static pair_t *select_gear_from_rpm(tree_node_t *tree, float rpm)
     {
         return &(mh600e_gears[MH600E_MAX_GEAR_INDEX]);
     }
-    else if ((rpm > 0) && (rpm <= mh600e_gears[MH600E_MIN_RPM_INDEX].key))
+    else if ((rpm > 1) && (rpm <= mh600e_gears[MH600E_MIN_RPM_INDEX].key))
     {
-        /* special case: everything >0 but lower than the lowest gear
-         * should still return the lowest gear, because >0 means we want
+        /* special case: everything >1 but lower than the lowest gear
+         * should still return the lowest gear, because >1 means we want
          * the spindle to rotate */
         return &(mh600e_gears[MH600E_MIN_RPM_INDEX]);
     }

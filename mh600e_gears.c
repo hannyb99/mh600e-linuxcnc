@@ -264,13 +264,13 @@ static bool gearshift_need_reverse(unsigned char target_mask,
 {
     if (MH600E_STAGE_IS_RIGHT(target_mask))           /* CCW, reverse is on */
     {
-        rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
                         "target pos is right (reverse on), current pos mask is %d\n", current_mask);
         return true;
     }
     else if (MH600E_STAGE_IS_LEFT(target_mask))       /* CW, reverse is off */
     {
-        rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
                         "target pos is left (reverse off), current pos mask is %d\n", current_mask);
         return false;
     }
@@ -278,25 +278,25 @@ static bool gearshift_need_reverse(unsigned char target_mask,
     {
         if (MH600E_STAGE_IS_LEFT(current_mask))/* CCW,reverse is on */
         {
-            rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
                             "target pos is center, current pos is left: %d (reverse on)\n", current_mask);
             return true;
         }
         else if (MH600E_STAGE_IS_RIGHT(current_mask)) /* CW, reverse is off */
         {
-            rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
                             "target pos is center, current pos is right: %d (reverse off)\n", current_mask);
             return false;
         }
         else if (MH600E_STAGE_IS_CENTER(current_mask)) /* CW, reverse is off */
         {
-            rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
                             "target pos is center, current pos is center: %d (reverse off)\n", current_mask);
             return false;
         }
         else
         {
-            rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_need_reverse: "
+            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
                             "target pos is center, current pos is in between, mask is: %d (reverse off)\n", current_mask);
             return false;
         }
@@ -540,21 +540,21 @@ static void gearshift_stop(long period)
 
 static void gearshift_backgear(long period)
 {
-    rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_backgear started\n");
+    rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_backgear started\n");
     gearshift_stage(&(g_gearbox_data.backgear), gearshift_backgear,
                     gearshift_stop, period);
 }
 
 static void gearshift_midrange(long period)
 {
-    rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_midrange started\n");
+    rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_midrange started\n");
     gearshift_stage(&(g_gearbox_data.midrange), gearshift_midrange,
                     gearshift_backgear, period);
 }
 
 static void gearshift_input_stage(long period)
 {
-    rtapi_print_msg(RTAPI_MSG_INFO, "mh600e_gearbox: gearshift_input_stage started\n");
+    rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_input_stage started\n");
     gearshift_stage(&(g_gearbox_data.input_stage), gearshift_input_stage,
                     gearshift_midrange, period);
 }

@@ -105,7 +105,7 @@ FUNCTION(setup)
      * array is already sorted */
     g_tree_rpm = tree_from_sorted_array(temp, MH600E_NUM_GEARS);
 
-    /* build up a key:value list where the bitmask from the mh500e_gears
+    /* build up a key:value list where the bitmask from the mh600e_gears
      * array is the key and the index of the original position in the
      * above array is the value */
     for (i = 0; i < MH600E_NUM_GEARS; i++)
@@ -183,6 +183,11 @@ FUNCTION(_)
         {
             spindle_speed_out = (float)speed->key;
         }
+        else
+        {
+            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: Unable to determine "
+                            "current spindle speed!\n");
+        }
 
         if (g_last_spindle_speed == spindle_speed_in_abs)
         {
@@ -195,6 +200,13 @@ FUNCTION(_)
          * gear already matches it */
         pair_t *new_gear = select_gear_from_rpm(g_tree_rpm,
                                                 spindle_speed_in_abs);
+        /* LinuxCNC commands 0 rpm (S0) when spindle stopped
+         * we don't want to change gear in this case */
+        if (new_gear == NULL)
+        {
+            spindle_at_speed = !spindle_stopped;
+            return;
+        }
         /* Current speed already matches the requested speed, nothing to do */
         if (new_gear->key == spindle_speed_out)
         {
