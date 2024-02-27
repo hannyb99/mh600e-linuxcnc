@@ -19,14 +19,17 @@ license "GPL";
 ;;
 
 #define OFF 0
-#define WAITING 1
-#define PRESSURIZING 2
-#define PRESSURIZED 3
-#define FAULT 4
+#define STARTUP 1
+#define WAIT 2
+#define PRESSURIZATION 3
+#define PRESSURIZED 4
+#define FAULT 5
 
-#define PRESSURIZING_TIMEOUT 10000
+#define STARTUP_TIME 60000
+#define PRESSURIZATION_TIMEOUT 10000
 #define PRESSURIZED_TIME 60000
 #define WAIT_TIME 600000
+#define FAULT_RESET_TIME 60000
 
 int state = OFF;
 int next_state = OFF;
@@ -41,22 +44,55 @@ FUNCTION(_)
         {
             if (!float_switch)
             {
+                rtapi_print_msg(RTAPI_MSG_ERR, "Lubricator: Low oil level\n");
                 state_time = 0;
-                next_state = OFF;
+                next_state = FAULT;
             }
             else
             {
                 state_time = 0;
-                next_state = PRESSURIZING;
+                next_state = STARTUP;
             }
         }
     }
-    else if (state == PRESSURIZING)
+    else if (state == STARTUP)
     {
-        if (state_time > PRESSURIZING_TIMEOUT || !float_switch)
+        pump_on = 0;
+        if (!machine_on)
         {
             state_time = 0;
             next_state = OFF;
+        }
+        else if (!float_switch)
+        {
+            rtapi_print_msg(RTAPI_MSG_ERR, "Lubricator: Low oil level\n");
+            state_time = 0;
+            next_state = FAULT;
+        }
+        else if (state_time > STARTUP_TIME)
+        {
+            state_time = 0;
+            next_state = PRESSURIZATION;
+        }
+    }
+    else if (state == PRESSURIZATION)
+    {
+        if (!machine_on)
+        {
+            state_time = 0;
+            next_state = OFF;
+        }
+        else if (state_time > PRESSURIZATION_TIMEOUT)
+        {
+            rtapi_print_msg(RTAPI_MSG_ERR, "Lubricator: Pressurization timeout\n");
+            state_time = 0;
+            next_state = FAULT;
+        }
+        else if (!float_switch)
+        {
+            rtapi_print_msg(RTAPI_MSG_ERR, "Lubricator: Low oil level\n");
+            state_time = 0;
+            next_state = FAULT;
         }
         else if (pressure_switch)
         {
@@ -70,44 +106,62 @@ FUNCTION(_)
     }
     else if (state == PRESSURIZED)
     {
-        if (!float_switch)
+        if (!machine_on)
         {
+            state_time = 0;
+            next_state = OFF;
+        }
+        else if (!float_switch)
+        {
+            rtapi_print_msg(RTAPI_MSG_ERR, "Lubricator: Low oil level\n");
+            state_time = 0;
+            next_state = FAULT;
+        }
+        else if (!pressure_switch)
+        {
+            rtapi_print_msg(RTAPI_MSG_ERR, "Lubricator: Pressure lost\n");
             state_time = 0;
             next_state = FAULT;
         }
         else if (state_time > PRESSURIZED_TIME)
         {
             state_time = 0;
-            next_state = WAITING;
+            next_state = WAIT;
         }
     }
-    else if (state == WAITING)
+    else if (state == WAIT)
     {
         pump_on = 0;
-        if (!float_switch)
+        if (!machine_on)
         {
+            state_time = 0;
+            next_state = OFF;
+        }
+        else if (!float_switch)
+        {
+            rtapi_print_msg(RTAPI_MSG_ERR, "Lubricator: Low oil level\n");
             state_time = 0;
             next_state = FAULT;
         }
         else if (state_time > WAIT_TIME)
         {
             state_time = 0;
-            next_state = PRESSURIZING;
+            next_state = PRESSURIZATION;
         }
     }
     else if (state == FAULT)
     {
         pump_on = 0;
-        if (reset_fault)
+        if (!machine_on)
         {
             state_time = 0;
-            next_state = PRESSURIZING;
+            next_state = OFF;
         }
-    }
-    if (!machine_on)
-    {
-        state_time = 0;
-        next_state = OFF;
+        else if (state_time > FAULT_RESET_TIME)
+        {
+            state_time = 0;
+            next_state = PRESSURIZATION;
+        }
     }
     state_time += 1;
     state = next_state;
