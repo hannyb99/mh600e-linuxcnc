@@ -73,6 +73,22 @@ pin out u32 debug11 = 0;
 pin out u32 debug12 = 0;
 pin out u32 debug13 = 0;
 pin out u32 debug14 = 0;
+pin out u32 debug15 = 0;
+pin out u32 debug16 = 0;
+pin out u32 debug17 = 0;
+pin out u32 debug18 = 0;
+pin out u32 debug19 = 0;
+pin out u32 debug20 = 0;
+pin out u32 debug21 = 0;
+pin out u32 debug22 = 0;
+pin out u32 debug23 = 0;
+pin out u32 debug24 = 0;
+pin out u32 debug25 = 0;
+pin out u32 debug26 = 0;
+pin out u32 debug27 = 0;
+pin out u32 debug28 = 0;
+pin out u32 debug29 = 0;
+pin out u32 debug30 = 0;
 
 function _;
 
@@ -198,20 +214,36 @@ FUNCTION(_)
         {
             spindle_speed_out = (float)speed->key;
         }
-        debug1 = g_tree_rpm->key;
-        debug2 = g_tree_rpm->value;
-        debug3 = g_tree_rpm->left->key;
-        debug4 = g_tree_rpm->left->value;
-        debug5 = g_tree_rpm->right->key;
-        debug6 = g_tree_rpm->right->value;
-        debug7 = g_tree_rpm->left->left->key;
-        debug8 = g_tree_rpm->left->left->value;
-        debug9 = g_tree_rpm->left->right->key;
-        debug10 = g_tree_rpm->left->right->value;
-        debug11 = g_tree_rpm->right->left->key;
-        debug12 = g_tree_rpm->right->left->value;
-        debug13 = g_tree_rpm->right->right->key;
-        debug14 = g_tree_rpm->right->right->value;
+        debug1 = g_tree_mask->key;
+        debug2 = g_tree_mask->value;
+        debug3 = g_tree_mask->left->key;
+        debug4 = g_tree_mask->left->value;
+        debug5 = g_tree_mask->right->key;
+        debug6 = g_tree_mask->right->value;
+        debug7 = g_tree_mask->left->left->key;
+        debug8 = g_tree_mask->left->left->value;
+        debug9 = g_tree_mask->left->right->key;
+        debug10 = g_tree_mask->left->right->value;
+        debug11 = g_tree_mask->right->left->key;
+        debug12 = g_tree_mask->right->left->value;
+        debug13 = g_tree_mask->right->right->key;
+        debug14 = g_tree_mask->right->right->value;
+        debug15 = g_tree_mask->left->left->left->key;
+        debug16 = g_tree_mask->left->left->left->value;
+        debug17 = g_tree_mask->left->left->right->key;
+        debug18 = g_tree_mask->left->left->right->value;
+        debug19 = g_tree_mask->left->right->left->key;
+        debug20 = g_tree_mask->left->right->left->value;
+        debug21 = g_tree_mask->left->right->right->key;
+        debug22 = g_tree_mask->left->right->right->value;
+        debug23 = g_tree_mask->right->left->left->key;
+        debug24 = g_tree_mask->right->left->left->value;
+        debug25 = g_tree_mask->right->left->right->key;
+        debug26 = g_tree_mask->right->left->right->value;
+        debug27 = g_tree_mask->right->right->left->key;
+        debug28 = g_tree_mask->right->right->left->value;
+        debug29 = g_tree_mask->right->right->right->key;
+        debug30 = g_tree_mask->right->right->right->value;
 
         if (g_last_spindle_speed == spindle_speed_in_abs)
         {
