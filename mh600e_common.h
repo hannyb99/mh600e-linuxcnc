@@ -50,7 +50,7 @@ typedef struct
 /* lookup table from rpm to gearbox status pin values */
 static pair_t mh600e_gears[] =
 {  /* rpm   bitmask                msb 11 10 9 8 7 6 5 4 3 2 1 0 lsb */
-    { 1,    4       },              /*   neutral         0 1 0 0 */
+    { 0,    4       },              /*   neutral         0 1 0 0 */
     { 80,   1089    },              /*   0 1 0 0 0 1 0 0 0 0 0 1 */
     { 100,  321     },              /*   0 0 0 1 0 1 0 0 0 0 0 1 */
     { 125,  577     },              /*   0 0 1 0 0 1 0 0 0 0 0 1 */
