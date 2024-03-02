@@ -61,6 +61,10 @@ pin in bit estop_in                 "This pin notifies us that an emergency stop
 
 pin out u32 debug1 = 0;
 pin out u32 debug2 = 0;
+pin out u32 debug3 = 0;
+pin out u32 debug4 = 0;
+pin out u32 debug5 = 0;
+pin out u32 debug6 = 0;
 
 function _;
 
