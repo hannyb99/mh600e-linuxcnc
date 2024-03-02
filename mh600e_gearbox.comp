@@ -183,12 +183,7 @@ FUNCTION(_)
         {
             spindle_speed_out = (float)speed->key;
         }
-        else
-        {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: Unable to determine "
-                            "current spindle speed!\n");
-        }
-
+        
         if (g_last_spindle_speed == spindle_speed_in_abs)
         {
             /* Nothing to do */
