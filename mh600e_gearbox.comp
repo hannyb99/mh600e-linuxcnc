@@ -59,6 +59,9 @@ pin out bit twitch_ccw         = 0  "MESA 7i84 OUTPUT 7: 28X1-15";
 pin out bit estop_out          = 0  "This pin will trigger emergency stop in case of an unrecoverably fatal error.";
 pin in bit estop_in                 "This pin notifies us that an emergency stop was triggered outside the component.";
 
+pin out u32 debug1 = 0;
+pin out u32 debug2 = 0;
+
 function _;
 
 option singleton yes;
@@ -183,10 +186,8 @@ FUNCTION(_)
         {
             spindle_speed_out = (float)speed->key;
         }
-        else
-        {
-            spindle_speed_out = g_tree_mask->value;
-        }
+        debug1 = g_tree_mask->key;
+        debug2 = g_tree_mask->value;
 
         if (g_last_spindle_speed == spindle_speed_in_abs)
         {
