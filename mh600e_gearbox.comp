@@ -183,7 +183,11 @@ FUNCTION(_)
         {
             spindle_speed_out = (float)speed->key;
         }
-        
+        else
+        {
+            spindle_speed_out = 5000;
+        }
+
         if (g_last_spindle_speed == spindle_speed_in_abs)
         {
             /* Nothing to do */
