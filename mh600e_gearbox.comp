@@ -65,6 +65,14 @@ pin out u32 debug3 = 0;
 pin out u32 debug4 = 0;
 pin out u32 debug5 = 0;
 pin out u32 debug6 = 0;
+pin out u32 debug7 = 0;
+pin out u32 debug8 = 0;
+pin out u32 debug9 = 0;
+pin out u32 debug10 = 0;
+pin out u32 debug11 = 0;
+pin out u32 debug12 = 0;
+pin out u32 debug13 = 0;
+pin out u32 debug14 = 0;
 
 function _;
 
@@ -196,6 +204,14 @@ FUNCTION(_)
         debug4 = g_tree_mask->left->value;
         debug5 = g_tree_mask->right->key;
         debug6 = g_tree_mask->right->value;
+        debug7 = g_tree_mask->left->left->key;
+        debug8 = g_tree_mask->left->left->value;
+        debug9 = g_tree_mask->left->right->key;
+        debug10 = g_tree_mask->left->right->value;
+        debug11 = g_tree_mask->right->left->key;
+        debug12 = g_tree_mask->right->left->value;
+        debug13 = g_tree_mask->right->right->key;
+        debug14 = g_tree_mask->right->right->value;
 
         if (g_last_spindle_speed == spindle_speed_in_abs)
         {
