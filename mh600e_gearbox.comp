@@ -188,6 +188,10 @@ FUNCTION(_)
         }
         debug1 = g_tree_mask->key;
         debug2 = g_tree_mask->value;
+        debug3 = g_tree_mask->left->key;
+        debug4 = g_tree_mask->left->value;
+        debug5 = g_tree_mask->right->key;
+        debug6 = g_tree_mask->right->value;
 
         if (g_last_spindle_speed == spindle_speed_in_abs)
         {
