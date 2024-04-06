@@ -34,12 +34,13 @@ functions directly in the header files.
  * For our use case it's anyway not a problem, because the trees are
  * built up during intialzation and not modified anymore.
  */
+
 static tree_node_t *tree_node_allocate(unsigned key, unsigned value)
 {
-    tree_node_t *tmp = (tree_node_t *)hal_malloc(sizeof(tree_node_t));
+    tree_node_t *tmp = (tree_node_t *)malloc(sizeof(tree_node_t));
     if (tmp == NULL)
     {
-        rtapi_print_msg(RTAPI_MSG_ERR, "MH600E_GEARBOX: failed to allocate "
+        printf("MH600E_GEARBOX: failed to allocate "
                         "memory for tree node!");
         return NULL;
     }
@@ -166,6 +167,7 @@ static tree_node_t *tree_search(tree_node_t *root, unsigned key)
     {
         return result;
     }
+    printf("MH600E_GEARBOX: no exact match found for key %d . Closest match: %d\n", key, result->key);
     return NULL;
 }
 
@@ -215,7 +217,7 @@ static pair_t *select_gear_from_rpm(tree_node_t *tree, float rpm)
         return &(mh600e_gears[MH600E_MIN_RPM_INDEX]);
     }
 
-    result = tree_search_closest_match(tree, (unsigned)round(rpm));
+    result = tree_search_closest_match(tree, (unsigned)rpm);
 
     return &(mh600e_gears[result->value]);
 }

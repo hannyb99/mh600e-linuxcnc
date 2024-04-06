@@ -197,7 +197,7 @@ static bool estop_on_spindle_running(void)
          *
          * We expect that estop_out will be looped back to us so that
          * it will trigger our handler. */
-        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox FATAL ERROR: detected "
+        printf("mh600e_gearbox FATAL ERROR: detected "
                 "running spindle while shifting, triggering emergency stop!\n");
         *g_gearbox_data.trigger_estop = true;
         return true;
@@ -264,13 +264,13 @@ static bool gearshift_need_reverse(unsigned char target_mask,
 {
     if (MH600E_STAGE_IS_RIGHT(target_mask))           /* CCW, reverse is on */
     {
-        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
+        printf("mh600e_gearbox: gearshift_need_reverse: "
                         "target pos is right (reverse on), current pos mask is %d\n", current_mask);
         return true;
     }
     else if (MH600E_STAGE_IS_LEFT(target_mask))       /* CW, reverse is off */
     {
-        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
+        printf("mh600e_gearbox: gearshift_need_reverse: "
                         "target pos is left (reverse off), current pos mask is %d\n", current_mask);
         return false;
     }
@@ -278,30 +278,30 @@ static bool gearshift_need_reverse(unsigned char target_mask,
     {
         if (MH600E_STAGE_IS_LEFT(current_mask))/* CCW,reverse is on */
         {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
+            printf("mh600e_gearbox: gearshift_need_reverse: "
                             "target pos is center, current pos is left: %d (reverse on)\n", current_mask);
             return true;
         }
         else if (MH600E_STAGE_IS_RIGHT(current_mask)) /* CW, reverse is off */
         {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
+            printf("mh600e_gearbox: gearshift_need_reverse: "
                             "target pos is center, current pos is right: %d (reverse off)\n", current_mask);
             return false;
         }
         else if (MH600E_STAGE_IS_CENTER(current_mask)) /* CW, reverse is off */
         {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
+            printf("mh600e_gearbox: gearshift_need_reverse: "
                             "target pos is center, current pos is center: %d (reverse off)\n", current_mask);
             return false;
         }
         else
         {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: gearshift_need_reverse: "
+            printf("mh600e_gearbox: gearshift_need_reverse: "
                             "target pos is center, current pos is in between, mask is: %d (reverse off)\n", current_mask);
             return false;
         }
     }
-    rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: WARNING: "
+    printf("mh600e_gearbox: WARNING: "
                      "gearshift_need_reverse: invalid target mask!\n");
     return false;
 }
@@ -329,7 +329,7 @@ static bool gearshift_protect(shaft_data_t *shaft)
         if ((shaft->current_mask == MH600E_STAGE_POS_RIGHT) &&
             (shaft->current_mask != shaft->target_mask))
         {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: WARNING: "
+            printf("mh600e_gearbox: WARNING: "
                         "shaft motor at unexpected right position!\n");
         }
         else
@@ -346,7 +346,7 @@ static bool gearshift_protect(shaft_data_t *shaft)
         if ((shaft->current_mask == MH600E_STAGE_POS_LEFT) &&
             (shaft->current_mask != shaft->target_mask))
         {
-            rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox: WARNING: "
+            printf("mh600e_gearbox: WARNING: "
                         "shaft motor at unexpected left position!\n");
         }
         else
@@ -565,7 +565,7 @@ static void gearshift_handle(long period)
 
     if (g_gearbox_data.next == NULL)
     {
-        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox FATAL ERROR: "
+        printf("mh600e_gearbox FATAL ERROR: "
                         "gearshift function not set up, triggering E-Stop!\n");
         *g_gearbox_data.trigger_estop = true;
         return;
