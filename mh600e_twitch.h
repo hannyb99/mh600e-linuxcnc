@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #ifndef __MH600E_TWITCH_H__
 #define __MH600E_TWITCH_H__
 
+#include <rtapi.h>
+
 #include "mh600e_common.h"
 
 /* Call only once, sets up the global twitch state data structure */

@@ -28,6 +28,8 @@ functions directly in the header files.
 #ifndef __MH600E_UTIL_H__
 #define __MH600E_UTIL_H__
 
+#include <rtapi.h>
+
 /* Binary search tree node. */
 typedef struct tree_node
 {
@@ -89,7 +91,6 @@ static pair_t *select_gear_from_rpm(tree_node_t *tree, float rpm);
 /* really ugly way of keeping more order and splitting the sources,
  * halcompile does not allow to link multipe source files together, so
  * ultimately all sources need to be included by the .comp directly */
-
-#include "mh600e_util.c"
+#include <mh600e_util.c>
 
 #endif//__MH00E_UTIL_H__

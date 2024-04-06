@@ -128,7 +128,7 @@ static void twitch_do(long period)
     }
     else /* both are never allowed to be on */
     {
-        printf("mh600e_gearbox FATAL ERROR: twitch "
+        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox FATAL ERROR: twitch "
                         "cw + ccw are on, triggering emergency stop!\n");
         *g_twitch_data.trigger_estop = true;
     }
@@ -161,7 +161,7 @@ static void twitch_handle(long period)
 {
     if (g_twitch_data.next == NULL)
     {
-        printf("mh600e_gearbox FATAL ERROR: twitch "
+        rtapi_print_msg(RTAPI_MSG_ERR, "mh600e_gearbox FATAL ERROR: twitch "
                         "function not set up, triggering emergency stop!\n");
         *g_twitch_data.trigger_estop = true;
         return;
