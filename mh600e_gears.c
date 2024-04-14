@@ -213,9 +213,9 @@ static pair_t* get_current_gear(tree_node_t *tree)
 {
     tree_node_t *result;
 
-    unsigned combined = (g_gearbox_data.input_stage.current_mask << 8) |
-                        (g_gearbox_data.midrange.current_mask << 4) |
-                         g_gearbox_data.backgear.current_mask;
+    unsigned combined = (g_gearbox_data.input_stage.current_mask << 12) |
+                        (g_gearbox_data.midrange.current_mask << 8) |
+                         g_gearbox_data.backgear.current_mask << 4;
 
     /* special case: ignore all other bits for neutral */
     if (g_gearbox_data.backgear.current_mask ==
